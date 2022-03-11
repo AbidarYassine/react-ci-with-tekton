@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: test
+spec:
+  steps:
+    - name: Test Task
+      image: ubuntu:latest
+      command:
+        - /bin/bash
+      args: ["-c", "echo Hello Abidar Yassine"]
