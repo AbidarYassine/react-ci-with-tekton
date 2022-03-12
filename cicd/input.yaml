@@ -6,6 +6,6 @@ spec:
   type: git
   params:
     - name: revision
-      value: main
+      value: cicd
     - name: url
       value: https://github.com/AbidarYassine/react-ci-with-tekton

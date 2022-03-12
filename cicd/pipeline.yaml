@@ -14,12 +14,3 @@ spec:
         inputs:
           - name: hello-react-app
             resource: hello-react-app
-    - name: build-task
-      runAfter:
-        - install-task
-      taskRef:
-        name: build
-      resources:
-        inputs:
-          - name: hello-react-app
-            resource: hello-react-app
