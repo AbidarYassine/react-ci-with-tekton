@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: node-pipeline
+spec:
+  resources:
+    - name: hello-react-app
+      type: git
+  tasks:
+    - name: install-task
+      taskRef:
+        name: install
+      resources:
+        inputs:
+          - name: hello-react-app
+            resource: hello-react-app
+    - name: build-task
+      runAfter:
+        - install-task
+      taskRef:
+        name: build
+      resources:
+        inputs:
+          - name: hello-react-app
+            resource: hello-react-app

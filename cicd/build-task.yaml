@@ -1,18 +1,18 @@
 apiVersion: tekton.dev/v1alpha1
 kind: Task
 metadata:
-  name: test
+  name: build
 spec:
   inputs:
     resources:
       - name: hello-react-app
         type: git
   steps:
-    - name: test
+    - name: npm-build
       image: node:14
       command:
         - /bin/sh
         - -c
-      workingDir: /workspace/hello-react-app
+      workingDir: /workspace/hello-react-app/
       args:
-        - npm run test
+        - npm run build
