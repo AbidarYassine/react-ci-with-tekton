@@ -1,14 +1,13 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: source-lister
-  namespace: tektontutorial
+  name: nodejs-ci
 spec:
   params:
     - default: "https://github.com/AbidarYassine/react-ci-with-tekton"
       name: url
       type: string
-    - default: cicd
+    - default: react-ci
       name: revision
       type: string
     - default: ""
@@ -31,7 +30,7 @@ spec:
       name: url
   steps:
     - image: "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.21.0"
-      name: clone
+      name: clone-repo
       resources: {}
       script: |
         CHECKOUT_DIR="$(workspaces.source.path)/$(params.subdirectory)"
@@ -66,15 +65,14 @@ spec:
       workingDir: $(workspaces.source.path)
       args:
         - npm install
-    - name: build
+    - name: lint
       image: node:14
       command:
         - /bin/sh
         - -c
       args:
-        - npm run build
+        - npm run lint
       workingDir: $(workspaces.source.path)
-
     - name: test
       image: node:14
       command:
@@ -83,14 +81,13 @@ spec:
       args:
         - npm run test
       workingDir: $(workspaces.source.path)
-
-    - name: lint
+    - name: build
       image: node:14
       command:
         - /bin/sh
         - -c
       args:
-        - npm run lint
+        - npm run build
       workingDir: $(workspaces.source.path)
   workspaces:
     - description: The git repo will be cloned onto the volume backing this workspace
