@@ -1,0 +1,58 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: nodejs-pipeline
+spec:
+  params:
+    - name: url
+      default: "https://github.com/AbidarYassine/react-ci-with-tekton"
+    - name: deleteExisting
+      default: "true"
+    - name: revision
+      default: "main"
+    - name: subdirectory
+      default: "app"
+    - name: action
+      default: "install"
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: "$(params.url)"
+        - name: deleteExisting
+          value: "$(params.deleteExisting)"
+        - name: subdirectory
+          value: "$(params.subdirectory)"
+    - name: simple-checkout
+      taskRef:
+        name: check
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      runAfter:
+        - fetch-repository
+    - name: install-dependencies
+      taskRef:
+        name: npm
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      params:
+        - name: action
+          value: "$(params.action)"
+        - name: PATH_CONTEXT
+          value: "$(params.subdirectory)"
+      when:
+        - input: $(tasks.simple-checkout.results.result-for-install)
+          operator: in
+          values:
+            - "1"
+      runAfter:
+        - simple-checkout
