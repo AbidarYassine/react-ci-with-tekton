@@ -1,0 +1,25 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: npm
+spec:
+  params:
+    - name: action
+      description: Operation to be performed by npm
+      default: "install"
+      type: string
+    - name: PATH_CONTEXT
+      type: string
+      default: "app"
+      description: The path where package.json of the project is defined.
+  workspaces:
+    - name: source
+  steps:
+    - name: npm
+      image: node:14-alpine
+      command:
+        - /bin/sh
+        - -c
+      workingDir: $(workspaces.source.path)/$(params.PATH_CONTEXT)
+      args:
+        - npm $(params.action)

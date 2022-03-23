@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: check
+spec:
+  params:
+    - name: subdirectory
+      default: "app"
+  workspaces:
+    - name: source
+  results:
+    - name: result-for-install
+      description: install result => 1 to run npm install or 0 to skip npm install
+  steps:
+    - name: calculhache
+      image: ubuntu
+      script: |
+        #!/usr/bin/env bash
+        newHachePackage=($(md5sum $(workspaces.source.path)/$(params.subdirectory)/package.json ))
+        newHachePackageLock=($(md5sum $(workspaces.source.path)/$(params.subdirectory)/package-lock.json ))
+        if [ -f "$(workspaces.source.path)/package.txt" -a -f "$(workspaces.source.path)/packageLock.txt" ]; then 
+          echo "Files exist"
+          oldHachePackage=$( cat $(workspaces.source.path)/package.txt )
+          oldHachePackageLock=$( cat $(workspaces.source.path)/packageLock.txt )
+          if [ "$newHachePackage" != "$oldHachePackage" -o "$newHachePackageLock" != "$oldHachePackageLock" ]; then   
+               echo -n "1" > $(results.result-for-install.path)
+               echo "package.json or package-lock.json is updated"
+               echo -n $newHachePackage > "$(workspaces.source.path)/package.txt"
+               echo -n $newHachePackageLock > "$(workspaces.source.path)/packageLock.txt"
+          else 
+             echo -n "0" > $(results.result-for-install.path)
+             echo "package.json and package-lock.json not updated"
+          fi   
+        else 
+          echo -n $newHachePackage > "$(workspaces.source.path)/package.txt"
+          echo -n $newHachePackageLock > "$(workspaces.source.path)/packageLock.txt"
+          echo "First Time git clone is invoked"
+          echo -n "1" > $(results.result-for-install.path)
+        fi
