@@ -27,4 +27,3 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ![plot](./screan/task.png)
 ### Execution of a pipeline with PipelineRuns
 ![plot](./screan/pipeline-run.png)
-
