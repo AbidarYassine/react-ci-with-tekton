@@ -25,8 +25,5 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ## We can visualise our workflow with Tekton dashboard
 ### Tasks
 ![plot](./screan/task.png)
-### Pipeline
-![plot](./screan/pipeline.png)
 ### Execution of a pipeline with PipelineRuns
 ![plot](./screan/pipeline-run.png)
-
