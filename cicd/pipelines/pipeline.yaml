@@ -56,3 +56,11 @@ spec:
             - "1"
       runAfter:
         - simple-checkout
+    - name: reader
+      taskRef:
+        name: read
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      runAfter:
+        - install-dependencies
