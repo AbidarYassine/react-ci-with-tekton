@@ -10,4 +10,4 @@ spec:
       image: registry.access.redhat.com/ubi8/ubi
       command:
         - /bin/bash
-      args: ["-c", "ls $(workspaces.output.path)/"]
+      args: ["-c", "ls $(workspaces.output.path)/app"]
